@@ -1,52 +1,59 @@
-pub enum List<'a, T> where T: Copy {
-    Filled(Box<Node<T> + 'a>),
-    Empty,
+use std::mem;
+
+pub struct List<T> where T: Copy {
+    head: Option<Box<Node<T>>>,
 }
 
-pub struct Node<'a, T> where T: Copy {
-    pub data: T,
-    pub next: Option<Box<Node<T> + 'a>>,
+struct Node<T> where T: Copy {
+    data: T,
+    next: Option<Box<Node<T>>>,
 }
 
-impl<'a, T> Iterator for List<'a, T> where T: Copy {
-    type Item = T;
+// impl<T> IntoIterator for List<T> where T: Copy {
+//     type Item = T;
+//     type Iterator = Node<T>
 
-    fn next(&mut self) -> Option<Self::Item> {
-        match *self {
-            List::Empty => None,
-            List::Filled(ref node) => Some(node.data),
+//     fn into_iter(self) -> Self::IntoIter {
+//         match self.head {
+//             None => None,
+//             Some(node) => Some(node.data),
+//         }
+//     }
+// }
+
+impl<T> Drop for List<T> where T: Copy {
+    fn drop(&mut self) {
+        let mut walk = mem::replace(&mut self.head, None);
+        while let Some(boxed_node) = walk {
+            walk = boxed_node.next;
         }
     }
 }
 
-impl<'a, T> List<'a, T> where T: Copy {
+impl<T> List<T> where T: Copy {
     pub fn new() -> Self {
-        List::Empty
+        List {
+            head: None
+        }
     }
 
-    pub fn push(mut self, data: T) {
+    pub fn push(&mut self, data: T) {
         let new_node = Node {
             data: data,
-            next: match self {
-                List::Filled(boxed_node) => Some(&'a node),
-                List::Empty => None,
-            },
+            next: mem::replace(&mut self.head, None),
         };
-
-        self = List::Filled(Box::new(new_node));
+        self.head = Some(Box::new(new_node));
     }
 
-    pub fn pop(mut self) -> Option<T> {
-        match self {
-            List::Empty => None,
-            List::Filled(boxed_node) => {
+    pub fn pop(&mut self) -> Option<T> {
+        match mem::replace(&mut self.head, None) {
+            None => None,
+            Some(boxed_node) => {
                 let data = boxed_node.data;
-                self = match boxed_node.next {
-                    None => List::Empty,
-                    Some(next_node) => List::Filled(next_node),
-                };
+                self.head = boxed_node.next;
                 Some(data)
             },
         }
     }
 }
+
