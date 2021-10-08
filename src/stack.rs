@@ -1,10 +1,16 @@
 use std::mem;
 
-pub struct List<T> where T: Copy {
+pub struct List<T>
+where
+    T: Copy,
+{
     head: Option<Box<Node<T>>>,
 }
 
-struct Node<T> where T: Copy {
+struct Node<T>
+where
+    T: Copy,
+{
     data: T,
     next: Option<Box<Node<T>>>,
 }
@@ -21,7 +27,10 @@ struct Node<T> where T: Copy {
 //     }
 // }
 
-impl<T> Drop for List<T> where T: Copy {
+impl<T> Drop for List<T>
+where
+    T: Copy,
+{
     fn drop(&mut self) {
         let mut walk = mem::replace(&mut self.head, None);
         while let Some(boxed_node) = walk {
@@ -30,16 +39,17 @@ impl<T> Drop for List<T> where T: Copy {
     }
 }
 
-impl<T> List<T> where T: Copy {
+impl<T> List<T>
+where
+    T: Copy,
+{
     pub fn new() -> Self {
-        List {
-            head: None
-        }
+        List { head: None }
     }
 
     pub fn push(&mut self, data: T) {
         let new_node = Node {
-            data: data,
+            data,
             next: mem::replace(&mut self.head, None),
         };
         self.head = Some(Box::new(new_node));
@@ -52,8 +62,7 @@ impl<T> List<T> where T: Copy {
                 let data = boxed_node.data;
                 self.head = boxed_node.next;
                 Some(data)
-            },
+            }
         }
     }
 }
-
