@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 use std::mem;
 
 pub struct List<T>
@@ -32,7 +33,7 @@ where
     T: Copy,
 {
     fn drop(&mut self) {
-        let mut walk = mem::replace(&mut self.head, None);
+        let mut walk = self.head.take();
         while let Some(boxed_node) = walk {
             walk = boxed_node.next;
         }
@@ -49,14 +50,19 @@ where
 
     pub fn push(&mut self, data: T) {
         let new_node = Node {
+<<<<<<< HEAD
             data,
             next: mem::replace(&mut self.head, None),
+=======
+            data: data,
+            next: self.head.take(),
+>>>>>>> 8852f41fd091be5e18b6ef21b5f884d7754cf65f
         };
         self.head = Some(Box::new(new_node));
     }
 
     pub fn pop(&mut self) -> Option<T> {
-        match mem::replace(&mut self.head, None) {
+        match self.head.take() {
             None => None,
             Some(boxed_node) => {
                 let data = boxed_node.data;
