@@ -1,22 +1,13 @@
-<<<<<<< HEAD
-use std::mem;
-
-pub struct List<T>
-where
-    T: Copy,
-{
+pub struct List<T> {
     head: Option<Box<Node<T>>>,
 }
 
-struct Node<T>
-where
-    T: Copy,
-{
+struct Node<T> {
     data: T,
     next: Option<Box<Node<T>>>,
 }
 
-// impl<T> IntoIterator for List<T> where T: Copy {
+// impl<T> IntoIterator for List<T> {
 //     type Item = T;
 //     type Iterator = Node<T>
 
@@ -28,10 +19,7 @@ where
 //     }
 // }
 
-impl<T> Drop for List<T>
-where
-    T: Copy,
-{
+impl<T> Drop for List<T> {
     fn drop(&mut self) {
         let mut walk = self.head.take();
         while let Some(boxed_node) = walk {
@@ -40,23 +28,15 @@ where
     }
 }
 
-impl<T> List<T>
-where
-    T: Copy,
-{
+impl<T> List<T> {
     pub fn new() -> Self {
         List { head: None }
     }
 
     pub fn push(&mut self, data: T) {
         let new_node = Node {
-<<<<<<< HEAD
             data,
-            next: mem::replace(&mut self.head, None),
-=======
-            data: data,
             next: self.head.take(),
->>>>>>> 8852f41fd091be5e18b6ef21b5f884d7754cf65f
         };
         self.head = Some(Box::new(new_node));
     }
