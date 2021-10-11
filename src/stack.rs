@@ -42,13 +42,18 @@ impl<T> List<T> {
     }
 
     pub fn pop(&mut self) -> Option<T> {
-        match self.head.take() {
-            None => None,
-            Some(boxed_node) => {
-                let data = boxed_node.data;
-                self.head = boxed_node.next;
-                Some(data)
-            }
-        }
+        self.head.take().map(|boxed_node| {
+            let data = boxed_node.data;
+            self.head = boxed_node.next;
+            data
+        })
+    }
+
+    pub fn peek(&self) -> Option<&T> {
+        self.head.as_ref().map(|boxed_node| &boxed_node.data)
+    }
+
+    pub fn peek_mut(&mut self) -> Option<&mut T> {
+        self.head.as_mut().map(|boxed_node| &mut boxed_node.data)
     }
 }
