@@ -7,17 +7,40 @@ struct Node<T> {
     next: Option<Box<Node<T>>>,
 }
 
-// impl<T> IntoIterator for List<T> {
-//     type Item = T;
-//     type Iterator = Node<T>
+pub struct IntoIter<T>(List<T>);
 
-//     fn into_iter(self) -> Self::IntoIter {
-//         match self.head {
-//             None => None,
-//             Some(node) => Some(node.data),
-//         }
-//     }
-// }
+pub struct Iter<'a, T> {
+    next: Option<&'a Node<T>>,
+}
+
+impl<T> List<T> {
+    pub fn into_iter(self) -> IntoIter<T> {
+        IntoIter(self)
+    }
+
+    pub fn iter(&self) -> Iter<T> {
+        Iter { next: self.head.as_deref() }
+    }
+}
+
+impl<T> Iterator for IntoIter<T> {
+    type Item = T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.pop()
+    }
+}
+
+impl<'a, T> Iterator for Iter<'a, T> {
+    type Item = &'a T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.next.map(|node| {
+            self.next = node.next.as_deref();
+            &node.data
+        })
+    }
+}
 
 impl<T> Drop for List<T> {
     fn drop(&mut self) {

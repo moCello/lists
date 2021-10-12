@@ -35,3 +35,34 @@ fn peed_mut() {
     stack.peek_mut().map(|data| *data = 3);
     assert_eq!(stack.peek(), Some(&3));
 }
+
+#[test]
+fn into_iter() {
+    let mut stack = Stack::new();
+
+    stack.push(42);
+    stack.push(44);
+    stack.push(3);
+    let mut iter = stack.into_iter();
+    assert_eq!(iter.next(), Some(3));
+    assert_eq!(iter.next(), Some(44));
+    assert_eq!(iter.next(), Some(42));
+    assert_eq!(iter.next(), None);
+}
+
+#[test]
+fn iter() {
+    let mut stack = Stack::new();
+
+    stack.push(2);
+    stack.push(4);
+    stack.push(8);
+    stack.push(16);
+    let mut iter = stack.iter();
+    assert_eq!(iter.next(), Some(&16));
+    assert_eq!(iter.next(), Some(&8));
+    assert_eq!(iter.next(), Some(&4));
+    assert_eq!(iter.next(), Some(&2));
+    assert_eq!(iter.next(), None);
+    assert_eq!(stack.pop(), Some(16));
+}
