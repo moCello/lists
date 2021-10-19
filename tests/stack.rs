@@ -27,7 +27,7 @@ fn peek() {
 }
 
 #[test]
-fn peed_mut() {
+fn peek_mut() {
     let mut stack = Stack::new();
 
     stack.push(2);
