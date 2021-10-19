@@ -66,3 +66,19 @@ fn iter() {
     assert_eq!(iter.next(), None);
     assert_eq!(stack.pop(), Some(16));
 }
+
+#[test]
+fn iter_mut() {
+    let mut stack = Stack::new();
+    stack.push(10);
+
+    let mut iter_mut = stack.iter_mut();
+
+    if let Some(x) = iter_mut.next() {
+        assert_eq!(*x, 10);
+        *x = 100;
+    }
+
+    let mut iter = stack.iter();
+    assert_eq!(iter.next(), Some(&100));
+}
